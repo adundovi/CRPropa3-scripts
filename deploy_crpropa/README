@@ -1,0 +1,7 @@
+
+== Requirements ==
+
+This script is intended for CRPropa deployment without root access, but some minimal and common development packages and programs are required for successful installation.
+
+Required programs: wget unzip gcc cmake make gcc-c++ gcc-gfortran tar 
+Required development packages: pcre-devel python-devel
