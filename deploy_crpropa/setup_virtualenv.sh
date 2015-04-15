@@ -16,7 +16,7 @@ function install_virtualenv_old {
 
 	BOOTSTRAP_DIR=$HOME"/.bootstrap_virtenv"
 
-	SYS_PYTHON=`which python`
+	SYS_PYTHON=`which python2.7`
 	WGET="`which wget`"
 	export PYTHONPATH=$BOOTSTRAP_DIR"/lib/python2.6/site-packages"
 

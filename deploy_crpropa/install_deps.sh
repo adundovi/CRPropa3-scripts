@@ -19,6 +19,12 @@ function download_install {
 
 }
 
+function pip_install {
+	. $CRPROPA_DIR/bin/activate
+	pip install $1
+	deactivate
+}
+
 # SWIG install
 
 SWIG_FILE="swig-3.0.5.tar.gz"
@@ -34,3 +40,6 @@ FFTW_URL="http://www.fftw.org/$FFTW_FILE"
 FFTW_BUILD=$CRPROPA_DIR"/swig_build"
 
 download_install $FFTW_FILE $FFTW_URL $FFTW_BUILD
+
+pip_install numpy
+pip_install matplotlib

@@ -2,7 +2,7 @@
 
 # pretty output
 SCRIPT_DIR=`dirname $0`
-. $SCRIPT_DIR"/cli_output.sh"
+source $SCRIPT_DIR"/cli_output.sh"
 
 
 # custom or default path
@@ -50,7 +50,7 @@ step "Getting CRPropa3 from GitHub"
 	#git reset --hard $CUSTOM_VER
 verify
 
-step "Compile and install dependencies: SWIG, FFTW3"
+step "Compile and install dependencies: SWIG, FFTW3, numpy"
 	$SCRIPT_DIR"/install_deps.sh" $CRPROPA_DIR > /dev/null 2>&1
 verify
 
@@ -63,6 +63,6 @@ step "Add CRPropa to virtualenv path"
 verify
 
 echo
-echo "To enter in python virtualenv enter:"
+echo "To enter in python's virtualenv with CRPropa support enter:"
 echo "source $CRPROPA_DIR/bin/activate"
 
