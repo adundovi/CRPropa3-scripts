@@ -63,6 +63,6 @@ step "Add CRPropa to virtualenv path"
 verify
 
 echo
-echo "To enter in python's virtualenv with CRPropa support enter:"
+echo "To enter in python's virtualenv with CRPropa support run:"
 echo "source $CRPROPA_DIR/bin/activate"
 
