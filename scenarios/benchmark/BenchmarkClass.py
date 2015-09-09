@@ -17,8 +17,10 @@ class Benchmark( object ):
         self.source = Source()
         self.OutputName = None
         
+
         self.boxOrigin = Vector3d(54,54,54) * Mpc
         self.boxSize = 132 * Mpc
+        self.grid = '~/crpropa_virtenv/share/crpropa/bench_54-186Mpc_440bins.raw'
         
         self.NEvents = 5000
         self.A = 1
@@ -30,7 +32,7 @@ class Benchmark( object ):
         
         # modulation grid
         mgrid = ScalarGrid( self.boxOrigin, 440, self.boxSize / 440 )
-        loadGrid( mgrid, '/afs/desy.de/user/a/adundovi/crpropa_virtenv/share/crpropa/bench_54-186Mpc_440bins.raw', 1. )
+        loadGrid( mgrid, self.grid, 1. )
 
         # turbulent vector grid
         boxSpacing = 13.2 * Mpc / 440
@@ -112,4 +114,3 @@ class Benchmark( object ):
         self.m.setShowProgress( True )
         self.m.run( self.source, self.NEvents, True )
 
-        
