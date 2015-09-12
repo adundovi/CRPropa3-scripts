@@ -8,20 +8,23 @@ class Benchmark( object ):
     """
 
     def __init__( self ):
-        """ Initialize required objects and parameters on default values      
+        """ Initialize required objects and parameters on default values
+            All parameters can be overridden
         """
 
+        # Containers
         self.bField = None
         self.obs = Observer()
         self.m = ModuleList()
         self.source = Source()
         self.OutputName = None
-        
 
+        # Box proporties
         self.boxOrigin = Vector3d(54,54,54) * Mpc
         self.boxSize = 132 * Mpc
         self.grid = '~/crpropa_virtenv/share/crpropa/bench_54-186Mpc_440bins.raw'
         
+        # Candidates
         self.NEvents = 5000
         self.A = 1
         self.Z = 1
