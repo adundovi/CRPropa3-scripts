@@ -47,13 +47,14 @@ function install_virtualenv_new {
 
 	WGET="`which wget`"
 	UNZIP="`which unzip`"
+    SYS_PYTHON=`which python2.7`
 
 	$WGET --directory-prefix=$BOOTSTRAP_DIR $VIRTENV_URL
-	$UNZIP $BOOTSTRAP_DIR"/develop.zip" -d $BOOTSTRAP_DIR
+	$UNZIP -o $BOOTSTRAP_DIR"/develop.zip" -d $BOOTSTRAP_DIR
 	
 	# setup new virtualenv
 	VIRTENV=$BOOTSTRAP_DIR"/virtualenv-develop/virtualenv.py"
-	$VIRTENV $VIRTENV_DIR --no-site-packages
+	$SYS_PYTHON $VIRTENV $VIRTENV_DIR --no-site-packages
 
 	# remove bootstrap directory
 	rm -rf $BOOTSTRAP_DIR
