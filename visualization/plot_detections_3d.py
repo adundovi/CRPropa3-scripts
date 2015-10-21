@@ -6,35 +6,13 @@ import sys
 import numpy as np
 import vispy.scene
 from vispy.scene import visuals
-from vispy.visuals.transforms import STTransform
 
 from crpropa import *
+from shared_objects import *
 
 def load_detections():
     raw_data = np.genfromtxt( sys.argv[1] )
     return raw_data[:,5:5+3]
-
-def put_detections( view, detections ):
-    """ Scatter data
-    """
-    scatter = visuals.Markers()
-    scatter.set_data( detections, edge_color=None, face_color=(1, 1, 1, .5), size=5 )
-
-    view.add( scatter )
-
-
-def put_observer( view, coords, radius, color='black', edge_color='red' ):
-    """ Put the observer on the scene
-        radius and coords in Mpc
-    """
-
-    observer = visuals.Sphere(radius=radius, method='latitude', parent=view.scene,
-                              color=color, edge_color=edge_color)
-    observer.transform = STTransform( translate=coords )
-
-    # add a colored 3D axis for orientation
-    axis = visuals.XYZAxis( parent=view.scene )
-    axis.transform = STTransform( translate=[ c-1 for c in coords ] )
 
 def main():
 
@@ -42,12 +20,9 @@ def main():
     view = canvas.central_widget.add_view()
 
     detections = load_detections()
-    put_detections( view, detections )
+    add_points( view, detections )
 
-    #obsPosition = [ 118.34, 117.69, 119.2 ]
-    #put_observer( view, obsPosition, 1 )
-
-    view.camera = 'turntable'  # or try 'arcball'
+    view.camera = 'turntable'
 
 if __name__ == '__main__':
     import sys
