@@ -19,12 +19,12 @@ class Benchmark( object ):
         self.bField = None
         self.obs = Observer()
         self.source = Source()
-        self.OutputName = None
+        self.outputFileName = None
 
         # Box proporties
         self.boxOrigin = Vector3d( 54, 54, 54 ) * Mpc
         self.boxSize = 132 * Mpc
-        self.grid = os.path.expanduser('~/crpropa_virtenv/share/crpropa/bench_54-186Mpc_440bins.raw')
+        self.gridFile = os.path.expanduser('~/crpropa_virtenv/share/crpropa/bench_54-186Mpc_440bins.raw')
         self.Brms = 1.
         self.sources_file = 'BenchmarkSources.txt'
         self.composition = None
@@ -47,7 +47,7 @@ class Benchmark( object ):
         
         # modulation grid
         mgrid = ScalarGrid( self.boxOrigin, 440, self.boxSize / 440 )
-        loadGrid( mgrid, self.grid, 1. )
+        loadGrid( mgrid, self.gridFile, 1. )
 
         # turbulent vector grid
         boxSpacing = 13.2 * Mpc / 440
@@ -62,7 +62,7 @@ class Benchmark( object ):
         """
 
         self.obs.add( ObserverSmallSphere( self.obsPosition, self.obsSize ) )
-        out = TextOutput( self.OutputName )
+        out = TextOutput( self.outputFileName )
         out.printHeader()
         self.obs.onDetection( out )
     
