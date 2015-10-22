@@ -29,9 +29,19 @@ class Benchmark( object ):
         self.sources_file = 'BenchmarkSources.txt'
         self.composition = None
 
+        # Observer size and position
         self.obsPosition = Vector3d( 118.34, 117.69, 119.2 ) * Mpc
         self.obsSize = 1. * Mpc
 
+        # Propagational proporties
+        self.minEnergy = 1. * EeV
+        self.maxTrajectory = 4000 * Mpc
+
+        # General source properties
+        self.sourceMinEnergy = 1. * EeV
+        self.sourceMaxRigidity = 1000. * EeV
+        self.sourceSpectralIndex = -1.
+        
         # Random seeds
         self.turbulenceSeed = 2308
         self.generalSeed = 185652056
@@ -113,10 +123,6 @@ class Benchmark( object ):
         for x, y, z in zip(sX, sY, sZ):
             sourceList.add(Vector3d(x, y, z))
 
-        self.sourceMinEnergy = 1. * EeV
-        self.sourceMaxRigidity = 1000. * EeV
-        self.sourceSpectralIndex = -1.
-        
         self.source.add( sourceList )
         self.source.add( SourceIsotropicEmission() )
         
@@ -132,21 +138,21 @@ class Benchmark( object ):
         
         # interactions
         EBL = IRB_Gilmore12
-        self.m.add(PhotoPionProduction(CMB))
-        self.m.add(PhotoPionProduction(EBL))
-        self.m.add(PhotoDisintegration(CMB))
-        self.m.add(PhotoDisintegration(EBL))
-        self.m.add(NuclearDecay())
-        self.m.add(ElectronPairProduction(CMB))
-        self.m.add(ElectronPairProduction(EBL))
+        self.m.add( PhotoPionProduction(CMB) )
+        self.m.add( PhotoPionProduction(EBL) )
+        self.m.add( PhotoDisintegration(CMB) )
+        self.m.add( PhotoDisintegration(EBL) )
+        self.m.add( NuclearDecay() )
+        self.m.add( ElectronPairProduction(CMB) )
+        self.m.add( ElectronPairProduction(EBL) )
 
     def init_moduleList( self ):
         """ Initialize moduleList
         """
         
         self.m.add( DeflectionCK( self.bField, 1e-3, 10. * kpc, 10. * Mpc ) )
-        self.m.add( MinimumEnergy( 1. * EeV ) )
-        self.m.add( MaximumTrajectoryLength( redshift2ComovingDistance(2) ) )
+        self.m.add( MinimumEnergy( self.minEnergy ) )
+        self.m.add( MaximumTrajectoryLength( self.maxTrajectory ) )
         self.m.add( ReflectiveBox( self.boxOrigin, Vector3d( self.boxSize ) ) )
         self.m.add( self.obs )
          
