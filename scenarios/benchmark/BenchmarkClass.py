@@ -15,14 +15,14 @@ class Benchmark( object ):
         """
 
         # Containers
+        self.m = ModuleList()
         self.bField = None
         self.obs = Observer()
-        self.m = ModuleList()
         self.source = Source()
         self.OutputName = None
 
         # Box proporties
-        self.boxOrigin = Vector3d(54,54,54) * Mpc
+        self.boxOrigin = Vector3d( 54, 54, 54 ) * Mpc
         self.boxSize = 132 * Mpc
         self.grid = os.path.expanduser('~/crpropa_virtenv/share/crpropa/bench_54-186Mpc_440bins.raw')
         self.Brms = 1.
@@ -31,6 +31,10 @@ class Benchmark( object ):
 
         self.obsPosition = Vector3d( 118.34, 117.69, 119.2 ) * Mpc
         self.obsSize = 1. * Mpc
+
+        # Random seeds
+        self.turbulenceSeed = 2308
+        self.generalSeed = 185652056
 
         # Candidates
         self.NEvents = 5000
@@ -48,10 +52,10 @@ class Benchmark( object ):
         # turbulent vector grid
         boxSpacing = 13.2 * Mpc / 440
         vgrid = VectorGrid( self.boxOrigin, 440, boxSpacing )
-        initTurbulence(vgrid, self.Brms, 2. * boxSpacing, 2.2 * Mpc, -11./3., 2308)
+        initTurbulence( vgrid, self.Brms, 2. * boxSpacing, 2.2 * Mpc, -11./3., self.turbulenceSeed )
 
         # total magnetic field
-        self.bField = ModulatedMagneticFieldGrid(vgrid, mgrid)
+        self.bField = ModulatedMagneticFieldGrid( vgrid, mgrid )
 
     def init_observer( self ):
         """ Insert observer(s)
@@ -90,11 +94,9 @@ class Benchmark( object ):
                 (56, 26, 97.)
         ]
 
-        minEnergy = 1. * EeV
-        maxRigidity = 1000. * EeV
-        spectralIndex = -1.
-	    
-        self.composition = SourceComposition( minEnergy, maxRigidity, spectralIndex)
+        self.composition = SourceComposition( self.sourceMinEnergy,
+                                              self.sourceMaxRigidity,
+                                              self.sourceSpectralIndex )
 
         for A, Z, a in composition_table:
 		    if Z > 2:
@@ -111,18 +113,18 @@ class Benchmark( object ):
         for x, y, z in zip(sX, sY, sZ):
             sourceList.add(Vector3d(x, y, z))
 
-        minEnergy = 1. * EeV
-        maxRigidity = 1000. * EeV
-        spectralIndex = -1.
+        self.sourceMinEnergy = 1. * EeV
+        self.sourceMaxRigidity = 1000. * EeV
+        self.sourceSpectralIndex = -1.
         
-        self.source.add(sourceList)
-        self.source.add(SourceIsotropicEmission())
-        self.source.add(SourceParticleType( nucleusId( self.A, self.Z ) ))
-        self.source.add(SourcePowerLawSpectrum(minEnergy, maxRigidity, spectralIndex))        
+        self.source.add( sourceList )
+        self.source.add( SourceIsotropicEmission() )
         
-        #self.source.add( sourceList )
-        #self.source.add( SourceIsotropicEmission() )
-        #self.source.add( composition )
+        if self.A and self.Z: # if inserting single type particle source
+            self.source.add( SourceParticleType( nucleusId( self.A, self.Z ) ) )
+            self.source.add( SourcePowerLawSpectrum( self.sourceMinEnergy, self.sourceMaxRigidity, self.sourceSpectralIndex ) )
+        else:
+            self.source.add( composition )
 
     def init_interactions( self ):
         """ Used interactions
@@ -152,6 +154,8 @@ class Benchmark( object ):
         """ Initialized everything before the start of simulation
         """
       
+        Random_seedThreads( self.generalSeed )
+
         self.init_bField()
         self.init_sources()
         self.init_observer()
