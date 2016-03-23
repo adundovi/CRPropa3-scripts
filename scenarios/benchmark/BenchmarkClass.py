@@ -3,13 +3,13 @@ import os
 from crpropa import *
 import numpy as np
 
-class Benchmark( object ):
+class Benchmark(object):
     """ Benchmark scenario
         Specs: https://www.auger.unam.mx/AugerWiki/BenchmarkScenario
         PA GAP note: GAP-2012-138
     """
 
-    def __init__( self ):
+    def __init__(self):
         """ Initialize required objects and parameters on default values
             All parameters can be overridden
         """
@@ -22,24 +22,25 @@ class Benchmark( object ):
         self.outputFileName = None
 
         # Box proporties
-        self.boxOrigin = Vector3d( 54, 54, 54 ) * Mpc
-        self.boxSize = 132 * Mpc
-        self.gridFile = os.path.expanduser('~/crpropa_virtenv/share/crpropa/bench_54-186Mpc_440bins.raw')
+        self.boxOrigin = Vector3d(54, 54, 54)*Mpc
+        self.boxSize = 132*Mpc
+        self.gridFile = os.path.expanduser(
+                '~/.virtualenvs/crpropa/share/crpropa/bench_54-186Mpc_440bins.raw')
         self.Brms = 1.
         self.sources_file = 'BenchmarkSources.txt'
         self.composition = None
 
         # Observer size and position
-        self.obsPosition = Vector3d( 118.34, 117.69, 119.2 ) * Mpc
-        self.obsSize = 1. * Mpc
+        self.obsPosition = Vector3d(118.34, 117.69, 119.2)*Mpc
+        self.obsSize = 1.*Mpc
 
         # Propagational proporties
-        self.minEnergy = 1. * EeV
-        self.maxTrajectory = 4000 * Mpc
+        self.minEnergy = 1.*EeV
+        self.maxTrajectory = redshift2ComovingDistance(2)
 
         # General source properties
-        self.sourceMinEnergy = 1. * EeV
-        self.sourceMaxRigidity = 1000. * EeV
+        self.sourceMinEnergy = 1.*EeV
+        self.sourceMaxEnergy = 1000.*EeV
         self.sourceSpectralIndex = -1.
         
         # Random seeds
@@ -51,32 +52,32 @@ class Benchmark( object ):
         self.A = 1
         self.Z = 1
 
-    def init_bField( self ):
+    def init_bField(self):
         """ Initialize magnetic field
         """
         
         # modulation grid
-        mgrid = ScalarGrid( self.boxOrigin, 440, self.boxSize / 440 )
-        loadGrid( mgrid, self.gridFile, 1. )
+        mgrid = ScalarGrid(self.boxOrigin, 440, self.boxSize/440)
+        loadGrid(mgrid, self.gridFile, 1.)
 
         # turbulent vector grid
-        boxSpacing = 13.2 * Mpc / 440
-        vgrid = VectorGrid( self.boxOrigin, 440, boxSpacing )
-        initTurbulence( vgrid, self.Brms, 2. * boxSpacing, 2.2 * Mpc, -11./3., self.turbulenceSeed )
+        boxSpacing = 13.2*Mpc/440
+        vgrid = VectorGrid(self.boxOrigin, 440, boxSpacing)
+        initTurbulence(vgrid, self.Brms, 2.*boxSpacing, 2.2*Mpc, -11./3., self.turbulenceSeed)
 
         # total magnetic field
-        self.bField = ModulatedMagneticFieldGrid( vgrid, mgrid )
+        self.bField = ModulatedMagneticFieldGrid(vgrid, mgrid)
 
-    def init_observer( self ):
+    def init_observer(self):
         """ Insert observer(s)
         """
 
-        self.obs.add( ObserverSmallSphere( self.obsPosition, self.obsSize ) )
-        out = TextOutput( self.outputFileName )
+        self.obs.add(ObserverSmallSphere(self.obsPosition, self.obsSize))
+        out = TextOutput(self.outputFileName)
         out.printHeader()
-        self.obs.onDetection( out )
-    
-    def add_composition( composition ):
+        self.obs.onDetection(out)
+
+    def add_composition(composition):
         """ Composition table 
         """ 
         composition_table = [
@@ -104,63 +105,64 @@ class Benchmark( object ):
                 (56, 26, 97.)
         ]
 
-        self.composition = SourceComposition( self.sourceMinEnergy,
-                                              self.sourceMaxRigidity,
-                                              self.sourceSpectralIndex )
+        self.composition = SourceComposition(self.sourceMinEnergy,
+                                             self.sourceMaxRigidity,
+                                             self.sourceSpectralIndex)
 
         for A, Z, a in composition_table:
-		    if Z > 2:
-			    a *= 10 # Bisi's scaling factor
-		    self.composition.add( nucleusId( A, Z ), a )		
+            if Z > 2:
+        	    a *= 10 # Bisi's scaling factor
+            self.composition.add(nucleusId(A, Z), a)		
 
     def init_sources( self ):
         """ Deploy CR sources and their proporties
         """
-        
-        data = np.genfromtxt( self.sources_file, comments='#', delimiter=' ', dtype=np.float64)
+
+        data = np.genfromtxt(self.sources_file, comments='#', delimiter=' ', dtype=np.float64)
         sX, sY, sZ = data[:,0], data[:,1], data[:,2]
         sourceList = SourceMultiplePositions()
         for x, y, z in zip(sX, sY, sZ):
             sourceList.add(Vector3d(x, y, z))
 
-        self.source.add( sourceList )
-        self.source.add( SourceIsotropicEmission() )
-        
-        if self.A and self.Z: # if inserting single type particle source
-            self.source.add( SourceParticleType( nucleusId( self.A, self.Z ) ) )
-            self.source.add( SourcePowerLawSpectrum( self.sourceMinEnergy, self.sourceMaxRigidity, self.sourceSpectralIndex ) )
-        else:
-            self.source.add( composition )
+        self.source.add(sourceList)
+        self.source.add(SourceIsotropicEmission())
 
-    def init_interactions( self ):
+        if self.A and self.Z: # if inserting single type particle source
+            self.source.add(SourceParticleType(nucleusId(self.A, self.Z )))
+            self.source.add(SourcePowerLawSpectrum(self.sourceMinEnergy,
+                                                   self.sourceMaxEnergy,
+                                                   self.sourceSpectralIndex))
+        else:
+            self.source.add(composition)
+
+    def init_interactions(self):
         """ Used interactions
         """
-        
-        # interactions
-        EBL = IRB_Gilmore12
-        self.m.add( PhotoPionProduction(CMB) )
-        self.m.add( PhotoPionProduction(EBL) )
-        self.m.add( PhotoDisintegration(CMB) )
-        self.m.add( PhotoDisintegration(EBL) )
-        self.m.add( NuclearDecay() )
-        self.m.add( ElectronPairProduction(CMB) )
-        self.m.add( ElectronPairProduction(EBL) )
 
-    def init_moduleList( self ):
+        EBL = IRB_Gilmore12
+        self.m.add(PhotoPionProduction(CMB))
+        self.m.add(PhotoPionProduction(EBL))
+        self.m.add(PhotoDisintegration(CMB))
+        self.m.add(PhotoDisintegration(EBL))
+        self.m.add(NuclearDecay())
+        self.m.add(ElectronPairProduction(CMB))
+        self.m.add(ElectronPairProduction(EBL))
+
+    def init_moduleList(self):
         """ Initialize moduleList
         """
-        
-        self.m.add( DeflectionCK( self.bField, 1e-3, 10. * kpc, 10. * Mpc ) )
-        self.m.add( MinimumEnergy( self.minEnergy ) )
-        self.m.add( MaximumTrajectoryLength( self.maxTrajectory ) )
-        self.m.add( ReflectiveBox( self.boxOrigin, Vector3d( self.boxSize ) ) )
-        self.m.add( self.obs )
-         
-    def init( self ):
+
+        self.m.add(DeflectionCK(self.bField, 1e-3, 10.*kpc, 10.*Mpc))
+        self.m.add(MinimumEnergy(self.minEnergy))
+        self.m.add(MaximumTrajectoryLength(self.maxTrajectory))
+        self.m.add(ReflectiveBox(self.boxOrigin, Vector3d(self.boxSize)))
+        self.m.add(self.obs)
+
+    def init(self):
         """ Initialized everything before the start of simulation
         """
-      
-        Random_seedThreads( self.generalSeed )
+
+        Random_seedThreads(self.generalSeed)
 
         self.init_bField()
         self.init_sources()
@@ -168,10 +170,10 @@ class Benchmark( object ):
         self.init_interactions()
         self.init_moduleList()
 
-    def run( self ):
-        """ Run simulation
+    def run(self):
+        """ Run the simulation
         """
-        
-        self.m.setShowProgress( True )
-        self.m.run( self.source, self.NEvents, True )
+
+        self.m.setShowProgress(True)
+        self.m.run(self.source, self.NEvents, True)
 
