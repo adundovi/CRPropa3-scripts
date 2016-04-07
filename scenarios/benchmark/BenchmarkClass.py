@@ -40,7 +40,7 @@ class Benchmark(object):
 
         # General source properties
         self.sourceMinEnergy = 1.*EeV
-        self.sourceMaxEnergy = 1000.*EeV
+        self.sourceMaxEnergy = 26*1000.*EeV
         self.sourceSpectralIndex = -1.
         
         # Random seeds
@@ -106,7 +106,7 @@ class Benchmark(object):
         ]
 
         self.composition = SourceComposition(self.sourceMinEnergy,
-                                             self.sourceMaxRigidity,
+                                             self.sourceMaxEnergy,
                                              self.sourceSpectralIndex)
 
         for A, Z, a in composition_table:

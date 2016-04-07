@@ -3,15 +3,9 @@ from BenchmarkClass import Benchmark
 class Benchmark4D(Benchmark):
 
     def init_moduleList(self):
-        """ Initialize moduleList
-        """
+        Benchmark.init_moduleList(self)
 
-        self.m.add(DeflectionCK(self.bField, 1e-3, 10.*kpc, 1.*Mpc))
-        self.m.add(MinimumEnergy(self.minEnergy))
-        self.m.add(MaximumTrajectoryLength(self.maxTrajectory)) #remove?
-        self.m.add(ReflectiveBox(self.boxOrigin, Vector3d(self.boxSize)))
         self.m.add(FutureRedshift())
-        self.m.add(self.obs)
 
     def init_observer(self):
         Benchmark.init_observer(self)
