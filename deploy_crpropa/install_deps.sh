@@ -25,7 +25,7 @@ function pip_install {
 
 # SWIG install
 
-SWIG_FILE="swig-3.0.5.tar.gz"
+SWIG_FILE="swig-3.0.7.tar.gz"
 SWIG_URL="http://prdownloads.sourceforge.net/swig/$SWIG_FILE"
 SWIG_BUILD=$CRPROPA_DIR"/swig_build"
 SWIG_OPTIONS=""
