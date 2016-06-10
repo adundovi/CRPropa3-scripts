@@ -19,23 +19,24 @@ class Benchmark( object ):
         self.bField = None
         self.obs = Observer()
         self.source = Source()
-        self.outputFileName = None
+        self.outputFileName = 'default_output.txt'
 
         # Box proporties
         self.boxOrigin = Vector3d( 54, 54, 54 ) * Mpc
         self.boxSize = 132 * Mpc
-        self.gridFile = os.path.expanduser('~/crpropa_virtenv/share/crpropa/bench_54-186Mpc_440bins.raw')
+        self.gridFile = os.path.expanduser('~/.virtualenvs/crpropa/share/crpropa/bench_54-186Mpc_440bins.raw')
         self.Brms = 1.
+        self.Bnorm = 1.
         self.sources_file = 'BenchmarkSources.txt'
         self.composition = None
 
         # Observer size and position
         self.obsPosition = Vector3d( 118.34, 117.69, 119.2 ) * Mpc
-        self.obsSize = 1. * Mpc
+        self.obsSize = 0.1 * Mpc
 
         # Propagational proporties
         self.minEnergy = 1. * EeV
-        self.maxTrajectory = 4000 * Mpc
+        self.maxTrajectory = 2000 * Mpc
 
         # General source properties
         self.sourceMinEnergy = 1. * EeV
@@ -57,7 +58,7 @@ class Benchmark( object ):
         
         # modulation grid
         mgrid = ScalarGrid( self.boxOrigin, 440, self.boxSize / 440 )
-        loadGrid( mgrid, self.gridFile, 1. )
+        loadGrid(mgrid, self.gridFile, self.Bnorm)
 
         # turbulent vector grid
         boxSpacing = 13.2 * Mpc / 440
@@ -72,11 +73,15 @@ class Benchmark( object ):
         """
 
         self.obs.add( ObserverSmallSphere( self.obsPosition, self.obsSize ) )
-        out = TextOutput( self.outputFileName )
+        # Generally candidate is not deactivated on detection
+        self.obs.setDeactivateOnDetection( False )
+        
+        out = TextOutput( self.outputFileName, Output.Event3D )
         out.printHeader()
+
         self.obs.onDetection( out )
     
-    def add_composition( composition ):
+    def add_composition( self ):
         """ Composition table 
         """ 
         composition_table = [
@@ -130,7 +135,8 @@ class Benchmark( object ):
             self.source.add( SourceParticleType( nucleusId( self.A, self.Z ) ) )
             self.source.add( SourcePowerLawSpectrum( self.sourceMinEnergy, self.sourceMaxRigidity, self.sourceSpectralIndex ) )
         else:
-            self.source.add( composition )
+            self.add_composition()
+            self.source.add( self.composition )
 
     def init_interactions( self ):
         """ Used interactions

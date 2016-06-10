@@ -9,7 +9,7 @@ source $SCRIPT_DIR"/cli_output.sh"
 if [ -n "$1" ]; then
         CRPROPA_DIR=$1;
 else
-        CRPROPA_DIR=$HOME"/crpropa_virtenv"
+        CRPROPA_DIR=$HOME"/.virtualenvs/crpropa"
 fi
 
 announce "Deploy CRPropa3 to $CRPROPA_DIR"
