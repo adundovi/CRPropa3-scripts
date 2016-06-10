@@ -76,9 +76,7 @@ class Benchmark(object):
         self.obs.add( ObserverSmallSphere( self.obsPosition, self.obsSize ) )
         # Generally candidate is not deactivated on detection
         self.obs.setDeactivateOnDetection( False )
-        
         out = TextOutput( self.outputFileName, Output.Event3D )
-        out.printHeader()
 
         self.obs.onDetection( out )
     
