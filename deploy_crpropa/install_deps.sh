@@ -37,7 +37,7 @@ download_install $SWIG_FILE $SWIG_URL $SWIG_BUILD $SWIG_OPTIONS
 FFTW_FILE="fftw-3.3.4.tar.gz"
 FFTW_URL="http://www.fftw.org/$FFTW_FILE"
 FFTW_BUILD=$CRPROPA_DIR"/fftw_build"
-FFTW_OPTIONS="--enable-float --enable-shared --with-pic"
+FFTW_OPTIONS="--enable-float --enable-shared --with-pic CFLAGS=-fPIC"
 
 download_install $FFTW_FILE $FFTW_URL $FFTW_BUILD $FFTW_OPTIONS
 

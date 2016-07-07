@@ -8,6 +8,7 @@ else
 	VIRTENV_DIR=$HOME"/python_virtenv";
 fi
 
+
 function install_virtualenv_old {
 	# Old way of installing virtualenv	
 
@@ -43,22 +44,27 @@ function install_virtualenv_new {
 	# New way of installing virtualenv (recommanded)
 
 	BOOTSTRAP_DIR=$HOME"/.bootstrap_virtenv"
-	VIRTENV_URL="https://github.com/pypa/virtualenv/archive/develop.zip"
+	VIRTENV_URL="https://github.com/pypa/virtualenv/archive/15.0.2.zip"
+    VIRTENV_DIR=$1
 
 	WGET="`which wget`"
 	UNZIP="`which unzip`"
     SYS_PYTHON=`which python2.7`
 
-	$WGET --directory-prefix=$BOOTSTRAP_DIR $VIRTENV_URL
-	$UNZIP -o $BOOTSTRAP_DIR"/develop.zip" -d $BOOTSTRAP_DIR
+	$WGET --directory-prefix=$BOOTSTRAP_DIR $VIRTENV_URL 
+	$UNZIP -o $BOOTSTRAP_DIR"/15.0.2.zip" -d $BOOTSTRAP_DIR
 	
 	# setup new virtualenv
-	VIRTENV=$BOOTSTRAP_DIR"/virtualenv-develop/virtualenv.py"
+	VIRTENV=$BOOTSTRAP_DIR"/virtualenv-15.0.2/virtualenv.py"
 	$SYS_PYTHON $VIRTENV $VIRTENV_DIR --no-site-packages
 
 	# remove bootstrap directory
-	rm -rf $BOOTSTRAP_DIR
+	#rm -rf $BOOTSTRAP_DIR
 }
 
-install_virtualenv_new
+if ! [ -d "$VIRTENV_DIR" ]; then
+    mkdir $VIRTENV_DIR
+    install_virtualenv_new $VIRTENV_DIR
+fi
+
 

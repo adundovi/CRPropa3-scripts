@@ -1,10 +1,12 @@
 CXX=g++
+CXXFLAGS=-O2 -fPIC
 FILENAME=cpphelpers
+PYTHONHEADER=/usr/include/python2.6/
 
 all:
 	swig -c++ -python -builtin $(FILENAME).i
-	${CXX} -O2 -fPIC -c $(FILENAME).cpp
-	${CXX} -O2 -fPIC -c $(FILENAME)_wrap.cxx -I /home/andy/.virtualenvs/crpropa/include/python2.7/ 
-	${CXX} -fPIC -shared $(FILENAME).o $(FILENAME)_wrap.cxx -o _$(FILENAME).so -I /home/andy/.virtualenvs/crpropa/include/python2.7/
+	$(CXX) $(CXXFLAGS) -c $(FILENAME).cpp
+	$(CXX) $(CXXFLAGS) -c $(FILENAME)_wrap.cxx -I $(PYTHONHEADER) -lpython2.6
+	$(CXX) $(CXXFLAGS) -shared $(FILENAME).o $(FILENAME)_wrap.cxx -o _$(FILENAME).so -I $(PYTHONHEADER) -lpython2.6
 clean:
 	@rm -f *.so *.o *_wrap.cxx $(FILENAME).py *.pyc
