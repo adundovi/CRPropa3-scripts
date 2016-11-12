@@ -1,4 +1,4 @@
-#include <Python.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -10,14 +10,6 @@
 
 typedef long long int bigint;
 typedef unsigned long long int bigposint;
-
-static PyObject * spherical_factorial(PyObject *self, PyObject *args);
-static PyObject * spherical_shortfactorial(PyObject *self, PyObject *args);
-static PyObject * spherical_AssociatedLegendreP(PyObject *self, PyObject *args);
-static PyObject * spherical_SphericalHarmonics(PyObject *self, PyObject *args);
-static PyObject * spherical_C(PyObject *self, PyObject *args);
-
-PyMODINIT_FUNC initspherical(void);
 
 bigint factorial(int);
 double shortfactorial(int, int);
