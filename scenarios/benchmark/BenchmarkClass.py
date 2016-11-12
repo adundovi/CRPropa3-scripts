@@ -19,7 +19,7 @@ class Benchmark(object):
         self.bField = None
         self.obs = Observer()
         self.source = Source()
-        self.outputFileName = None
+        self.outputFileName = 'default_output.txt'
 
         # Box proporties
         self.boxOrigin = Vector3d(54, 54, 54)*Mpc
@@ -27,6 +27,7 @@ class Benchmark(object):
         self.gridFile = os.path.expanduser(
                 '~/.virtualenvs/crpropa/share/crpropa/bench_54-186Mpc_440bins.raw')
         self.Brms = 1.
+        self.Bnorm = 1.
         self.sources_file = 'BenchmarkSources.txt'
         self.composition = None
 
@@ -57,8 +58,8 @@ class Benchmark(object):
         """
         
         # modulation grid
-        mgrid = ScalarGrid(self.boxOrigin, 440, self.boxSize/440)
-        loadGrid(mgrid, self.gridFile, 1.)
+        mgrid = ScalarGrid( self.boxOrigin, 440, self.boxSize / 440 )
+        loadGrid(mgrid, self.gridFile, self.Bnorm)
 
         # turbulent vector grid
         boxSpacing = 13.2*Mpc/440
@@ -72,12 +73,14 @@ class Benchmark(object):
         """ Insert observer(s)
         """
 
-        self.obs.add(ObserverSmallSphere(self.obsPosition, self.obsSize))
-        out = TextOutput(self.outputFileName)
-        out.printHeader()
-        self.obs.onDetection(out)
+        self.obs.add( ObserverSmallSphere( self.obsPosition, self.obsSize ) )
+        # Generally candidate is not deactivated on detection
+        self.obs.setDeactivateOnDetection( False )
+        out = TextOutput( self.outputFileName, Output.Event3D )
 
-    def add_composition(composition):
+        self.obs.onDetection( out )
+    
+    def add_composition( self ):
         """ Composition table 
         """ 
         composition_table = [
@@ -133,7 +136,8 @@ class Benchmark(object):
                                                    self.sourceMaxEnergy,
                                                    self.sourceSpectralIndex))
         else:
-            self.source.add(composition)
+            self.add_composition()
+            self.source.add( self.composition )
 
     def init_interactions(self):
         """ Used interactions

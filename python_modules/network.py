@@ -9,6 +9,7 @@ class SendCandidateProperties( Module ):
     """
     def __init__( self, ip_port, extract_func ):
         Module.__init__( self )
+        self.socket = None
         self.ip_port = "tcp://" + ip_port
         self.extract_func = extract_func
 

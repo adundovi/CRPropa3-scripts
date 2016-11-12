@@ -5,6 +5,7 @@
 #include <limits>
 #include <cmath>
 #include <string>
+#include <stdlib.h>
 
 #include "cpphelpers.h"
 
@@ -47,7 +48,7 @@ std::vector<int> file2histogram(const char* filename, const int pos, const doubl
 
 int main(int argc, char** argv){
 
-    int pos = std::stoi(argv[2]);
+    int pos = atoi(argv[2]);
     double start, stop, step;
     std::vector<int> bins;
     
@@ -57,8 +58,8 @@ int main(int argc, char** argv){
 
     bins = file2histogram(argv[1], pos, start, stop, step);
 
-    for (int &i : bins){
-        std::cout << i << " ";
+    for (std::vector<int>::iterator it = bins.begin(); it != bins.end(); ++it){
+        std::cout << *it << " ";
     }
 
     return 0;

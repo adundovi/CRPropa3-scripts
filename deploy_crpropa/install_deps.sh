@@ -13,7 +13,8 @@ function download_install {
 	tar xvf "$CRPROPA_DIR/$1" --strip 1 -C $3
 
 	cd $3
-	./configure --prefix=$CRPROPA_DIR $4
+    echo $4
+    ./configure --prefix=$CRPROPA_DIR $4
 	make
 	make install
 
@@ -29,15 +30,15 @@ SWIG_URL="http://prdownloads.sourceforge.net/swig/$SWIG_FILE"
 SWIG_BUILD=$CRPROPA_DIR"/swig_build"
 SWIG_OPTIONS=""
 
-download_install $SWIG_FILE $SWIG_URL $SWIG_BUILD $SWIG_OPTIONS
+#download_install $SWIG_FILE $SWIG_URL $SWIG_BUILD $SWIG_OPTIONS
 
 # FFTW3 install
 FFTW_FILE="fftw-3.3.4.tar.gz"
 FFTW_URL="http://www.fftw.org/$FFTW_FILE"
 FFTW_BUILD=$CRPROPA_DIR"/fftw_build"
-FFTW_OPTIONS="--enable-float --enable-shared --with-pic"
+FFTW_OPTIONS="--enable-float --enable-shared CFLAGS=-fPIC"
 
-download_install $FFTW_FILE $FFTW_URL $FFTW_BUILD $FFTW_OPTIONS
+download_install $FFTW_FILE $FFTW_URL $FFTW_BUILD "$FFTW_OPTIONS"
 
 # muparser install
 MUPARS_FILE="v2.2.5.tar.gz"
