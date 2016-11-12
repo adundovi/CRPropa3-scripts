@@ -10,5 +10,8 @@ spherical.o: spherical.c
 test:
 	./tests.bin
 
+python:
+	python setup.py build
+
 clean:
 	rm spherical.o tests.bin
