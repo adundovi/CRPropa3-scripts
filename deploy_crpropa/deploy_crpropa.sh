@@ -4,7 +4,6 @@
 SCRIPT_DIR=`dirname $0`
 source $SCRIPT_DIR"/cli_output.sh"
 
-
 # custom or default path
 if [ -n "$1" ]; then
         CRPROPA_DIR=$1;

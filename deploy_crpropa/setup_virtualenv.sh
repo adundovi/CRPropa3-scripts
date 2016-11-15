@@ -43,8 +43,9 @@ function install_virtualenv_old {
 function install_virtualenv_new {
 	# New way of installing virtualenv (recommanded)
 
+    VERSION="15.0.3"
 	BOOTSTRAP_DIR=$HOME"/.bootstrap_virtenv"
-	VIRTENV_URL="https://github.com/pypa/virtualenv/archive/15.0.2.zip"
+	VIRTENV_URL="https://github.com/pypa/virtualenv/archive/"$VERSION".zip"
     VIRTENV_DIR=$1
 
 	WGET="`which wget`"
@@ -52,14 +53,14 @@ function install_virtualenv_new {
     SYS_PYTHON=`which python2.7`
 
 	$WGET --directory-prefix=$BOOTSTRAP_DIR $VIRTENV_URL 
-	$UNZIP -o $BOOTSTRAP_DIR"/15.0.2.zip" -d $BOOTSTRAP_DIR
+	$UNZIP -o $BOOTSTRAP_DIR"/"$VERSION".zip" -d $BOOTSTRAP_DIR
 	
 	# setup new virtualenv
-	VIRTENV=$BOOTSTRAP_DIR"/virtualenv-15.0.2/virtualenv.py"
+	VIRTENV=$BOOTSTRAP_DIR"/virtualenv-"$VERSION"/virtualenv.py"
 	$SYS_PYTHON $VIRTENV $VIRTENV_DIR --no-site-packages
 
 	# remove bootstrap directory
-	#rm -rf $BOOTSTRAP_DIR
+	rm -rf $BOOTSTRAP_DIR
 }
 
 if ! [ -d "$VIRTENV_DIR" ]; then
