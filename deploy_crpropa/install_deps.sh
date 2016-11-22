@@ -30,7 +30,7 @@ SWIG_URL="http://prdownloads.sourceforge.net/swig/$SWIG_FILE"
 SWIG_BUILD=$CRPROPA_DIR"/swig_build"
 SWIG_OPTIONS=""
 
-#download_install $SWIG_FILE $SWIG_URL $SWIG_BUILD $SWIG_OPTIONS
+download_install $SWIG_FILE $SWIG_URL $SWIG_BUILD $SWIG_OPTIONS
 
 # FFTW3 install
 FFTW_FILE="fftw-3.3.4.tar.gz"
