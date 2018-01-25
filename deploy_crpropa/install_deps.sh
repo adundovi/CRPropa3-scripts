@@ -25,7 +25,7 @@ function pip_install {
 }
 
 # SWIG install
-SWIG_FILE="swig-3.0.7.tar.gz"
+SWIG_FILE="swig-3.0.12.tar.gz"
 SWIG_URL="http://prdownloads.sourceforge.net/swig/$SWIG_FILE"
 SWIG_BUILD=$CRPROPA_DIR"/swig_build"
 SWIG_OPTIONS=""
@@ -33,7 +33,7 @@ SWIG_OPTIONS=""
 download_install $SWIG_FILE $SWIG_URL $SWIG_BUILD $SWIG_OPTIONS
 
 # FFTW3 install
-FFTW_FILE="fftw-3.3.4.tar.gz"
+FFTW_FILE="fftw-3.3.7.tar.gz"
 FFTW_URL="http://www.fftw.org/$FFTW_FILE"
 FFTW_BUILD=$CRPROPA_DIR"/fftw_build"
 FFTW_OPTIONS="--enable-float --enable-shared CFLAGS=-fPIC"
